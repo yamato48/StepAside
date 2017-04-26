@@ -17,10 +17,7 @@ public class ItemGenerator : MonoBehaviour
 
     private float unitychanPos;
     private GameObject unitychan;
-    private float i;
-
-    float elapsedTime;
-
+    private float lastGeneratePos = -220.0f;
 
 
     // Use this for initialization
@@ -34,23 +31,19 @@ public class ItemGenerator : MonoBehaviour
     void Update()
     {
         this.unitychanPos = unitychan.transform.position.z;
-        //ユニティちゃんの50メートル先
-        this.i = unitychanPos + 50;
-        //経過時間
-        elapsedTime += Time.deltaTime;
-
-        if(elapsedTime  >= 1.0f) {
-            elapsedTime = 0;
-
+ 
+        if ( lastGeneratePos - unitychanPos <= 20) {
+            lastGeneratePos = unitychanPos + 40;
+ 
                 //どのアイテムを出すのかをランダムに設定
-                int num = Random.Range(0, 10);
+            int num = Random.Range(0, 10);
                 if (num <= 1)
                 {
                     //コーンをx軸方向に一直線に生成
                     for (float j = -1; j <= 1; j += 0.4f)
                     {
                         GameObject cone = Instantiate(conePrefab) as GameObject;
-                        cone.transform.position = new Vector3(4 * j, cone.transform.position.y, i);
+                        cone.transform.position = new Vector3(4 * j, cone.transform.position.y, lastGeneratePos);
                     }
                 }
                 else
@@ -68,13 +61,13 @@ public class ItemGenerator : MonoBehaviour
                         {
                             //コインを生成
                             GameObject coin = Instantiate(coinPrefab) as GameObject;
-                            coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, i + offsetZ);
+                            coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, lastGeneratePos + offsetZ);
                         }
                         else if (7 <= item && item <= 9)
                         {
                             //車を生成
                             GameObject car = Instantiate(carPrefab) as GameObject;
-                            car.transform.position = new Vector3(posRange * j, car.transform.position.y, i + offsetZ);
+                            car.transform.position = new Vector3(posRange * j, car.transform.position.y, lastGeneratePos + offsetZ);
                         }
                     }
               }

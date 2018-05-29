@@ -69,28 +69,29 @@ public class UnityChanController : MonoBehaviour {
 			//Unityちゃんに上方向の力を加える
 			this.myRigidbody.AddForce(this.transform.up * this.upForce);
 		}
-			
-		//トリガーモードで他のオブジェクトと接触した場合の処理
-        void OnTriggerEnter(Collider other)
-        {
-
-            //障害物に衝突した場合
-            if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
-            {
-                this.isEnd = true;
-            }
-
-            //ゴール地点に到達した場合
-            if (other.gameObject.tag == "GoalTag")
-            {
-                this.isEnd = true;
-            }
-			//コインに衝突した場合
-            if (other.gameObject.tag == "CoinTag")
-            {
-                //接触したコインのオブジェクトを破棄
-                Destroy(other.gameObject);
-            }
-        }
 	}
+
+    //トリガーモードで他のオブジェクトと接触した場合の処理
+	void OnTriggerEnter(Collider other)
+    {
+
+        //障害物に衝突した場合
+        if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
+        {
+            this.isEnd = true;
+        }
+
+        //ゴール地点に到達した場合
+        if (other.gameObject.tag == "GoalTag")
+        {
+            this.isEnd = true;
+        }
+        //コインに衝突した場合
+        if (other.gameObject.tag == "CoinTag")
+        {
+            //接触したコインのオブジェクトを破棄
+            Destroy(other.gameObject);
+        }
+    }
+
 }

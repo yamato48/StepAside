@@ -15,8 +15,13 @@ public class UnityChanController : MonoBehaviour {
 	private float upForce = 500.0f;
 	//左右の移動できる範囲
     private float movableRange = 3.4f;
-	// Use this for initialization
+	//動きを減速させる係数
+    private float coefficient = 0.95f;
 
+    //ゲーム終了の判定
+    private bool isEnd = false;
+
+	// Use this for initialization
     void Start()
     {
         //Animatorコンポーネントを取得
@@ -31,6 +36,15 @@ public class UnityChanController : MonoBehaviour {
      
 	// Update is called once per frame
 	void Update () {
+		//ゲーム終了ならUnityちゃんの動きを減衰する
+        if (this.isEnd)
+        {
+            this.forwardForce *= this.coefficient;
+            this.turnForce *= this.coefficient;
+            this.upForce *= this.coefficient;
+            this.myAnimator.speed *= this.coefficient;
+        }
+
 		//Unityちゃんに前方向の力を加える
         this.myRigidbody.AddForce(this.transform.forward * this.forwardForce);	
 		//Unityちゃんを矢印キーまたはボタンに応じて左右に移動させる
@@ -47,13 +61,37 @@ public class UnityChanController : MonoBehaviour {
             this.myAnimator.SetBool("Jump", false);
         }
 
-        //ジャンプしていない時にスペースが押されたらジャンプする
-        if (Input.GetKeyDown(KeyCode.Space) && this.transform.position.y < 0.5f)
-        {
-            //ジャンプアニメを再生
-            this.myAnimator.SetBool("Jump", true);
-            //Unityちゃんに上方向の力を加える
-            this.myRigidbody.AddForce(this.transform.up * this.upForce);
-        }
+		//ジャンプしていない時にスペースが押されたらジャンプする
+		if (Input.GetKeyDown(KeyCode.Space) && this.transform.position.y < 0.5f)
+		{
+			//ジャンプアニメを再生
+			this.myAnimator.SetBool("Jump", true);
+			//Unityちゃんに上方向の力を加える
+			this.myRigidbody.AddForce(this.transform.up * this.upForce);
+		}
 	}
+
+    //トリガーモードで他のオブジェクトと接触した場合の処理
+	void OnTriggerEnter(Collider other)
+    {
+
+        //障害物に衝突した場合
+        if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
+        {
+            this.isEnd = true;
+        }
+
+        //ゴール地点に到達した場合
+        if (other.gameObject.tag == "GoalTag")
+        {
+            this.isEnd = true;
+        }
+        //コインに衝突した場合
+        if (other.gameObject.tag == "CoinTag")
+        {
+            //接触したコインのオブジェクトを破棄
+            Destroy(other.gameObject);
+        }
+    }
+
 }

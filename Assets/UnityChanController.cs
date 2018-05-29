@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnityChanController : MonoBehaviour {
 	//アニメーションするためのコンポーネントを入れる
@@ -20,6 +21,11 @@ public class UnityChanController : MonoBehaviour {
 
     //ゲーム終了の判定
     private bool isEnd = false;
+    //ゲーム終了時に表示
+	private GameObject stateText;
+    //スコア
+	private GameObject scoreText;
+	private int score = 0;
 
 	// Use this for initialization
     void Start()
@@ -32,6 +38,10 @@ public class UnityChanController : MonoBehaviour {
          
         //Rigidbodyコンポーネントを取得
         this.myRigidbody = GetComponent<Rigidbody>();
+
+		//シーン中のTextオブジェクト
+        this.stateText = GameObject.Find("GameResultText");
+		this.scoreText = GameObject.Find("ScoreText");
 	}
      
 	// Update is called once per frame
@@ -79,16 +89,22 @@ public class UnityChanController : MonoBehaviour {
         if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
         {
             this.isEnd = true;
+			this.stateText.GetComponent<Text>().text = "GAME OVER";
         }
 
         //ゴール地点に到達した場合
         if (other.gameObject.tag == "GoalTag")
         {
             this.isEnd = true;
+			this.stateText.GetComponent<Text>().text = "CLEAR!!";
         }
         //コインに衝突した場合
         if (other.gameObject.tag == "CoinTag")
         {
+			// スコアを加算
+            this.score += 10;
+            //ScoreText獲得した点数を表示
+            this.scoreText.GetComponent<Text>().text = "Score " + this.score + "pt";
             //接触したコインのオブジェクトを破棄
             Destroy(other.gameObject);
         }
